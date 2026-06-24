@@ -45,6 +45,32 @@ namespace zharov
 
   template< class K, class V >
   void remove(HashTable< K, V >& ht, const K& key);
+
+  template< class K, class V >
+  struct HashIter
+  {
+    HashTable< K, V >* table;
+    size_t slot;
+    detail::Node< Entry< K, V > >* node;
+  };
+
+  template< class K, class V >
+  HashIter< K, V > begin(HashTable< K, V >& ht);
+
+  template< class K, class V >
+  HashIter< K, V > end(HashTable< K, V >& ht);
+
+  template< class K, class V >
+  void next(HashIter< K, V >& iter);
+
+  template< class K, class V >
+  void prev(HashIter< K, V >& iter);
+
+  template< class K, class V >
+  bool hasNext(const HashIter< K, V >& iter);
+
+  template< class K, class V >
+  bool hasPrev(const HashIter< K, V >& iter);
 }
 
 template< class K, class V >
@@ -164,6 +190,105 @@ void zharov::remove(HashTable< K, V >& ht, const K& key)
       return;
     }
   }
+}
+
+template< class K, class V >
+zharov::HashIter< K, V > zharov::begin(HashTable< K, V >& ht)
+{
+  for (size_t i = 0; i < ht.cap; ++i)
+  {
+    if (ht.slots[i].head != nullptr)
+    {
+      return HashIter< K, V >{&ht, i, ht.slots[i].head};
+    }
+  }
+  return end(ht);
+}
+
+template< class K, class V >
+zharov::HashIter< K, V > zharov::end(HashTable< K, V >& ht)
+{
+  return HashIter< K, V >{&ht, ht.cap, nullptr};
+}
+
+template< class K, class V >
+void zharov::next(HashIter< K, V >& iter)
+{
+  if (iter.node->next != nullptr)
+  {
+    iter.node = iter.node->next;
+    return;
+  }
+  for (size_t i = iter.slot + 1; i < iter.table->cap; ++i)
+  {
+    if (iter.table->slots[i].head != nullptr)
+    {
+      iter.slot = i;
+      iter.node = iter.table->slots[i].head;
+      return;
+    }
+  }
+  iter.slot = iter.table->cap;
+  iter.node = nullptr;
+}
+
+template< class K, class V >
+void zharov::prev(HashIter< K, V >& iter)
+{
+  if (iter.node != nullptr && iter.node->prev != nullptr)
+  {
+    iter.node = iter.node->prev;
+    return;
+  }
+  const size_t startSlot = (iter.node != nullptr) ? iter.slot : iter.table->cap;
+  for (size_t i = startSlot; i-- > 0; )
+  {
+    if (iter.table->slots[i].tail != nullptr)
+    {
+      iter.slot = i;
+      iter.node = iter.table->slots[i].tail;
+      return;
+    }
+  }
+}
+
+template< class K, class V >
+bool zharov::hasNext(const HashIter< K, V >& iter)
+{
+  if (iter.node == nullptr)
+  {
+    return false;
+  }
+  if (iter.node->next != nullptr)
+  {
+    return true;
+  }
+  for (size_t i = iter.slot + 1; i < iter.table->cap; ++i)
+  {
+    if (iter.table->slots[i].head != nullptr)
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+template< class K, class V >
+bool zharov::hasPrev(const HashIter< K, V >& iter)
+{
+  if (iter.node != nullptr && iter.node->prev != nullptr)
+  {
+    return true;
+  }
+  const size_t startSlot = (iter.node != nullptr) ? iter.slot : iter.table->cap;
+  for (size_t i = startSlot; i-- > 0; )
+  {
+    if (iter.table->slots[i].tail != nullptr)
+    {
+      return true;
+    }
+  }
+  return false;
 }
 
 #endif
