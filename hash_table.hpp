@@ -241,8 +241,10 @@ void zharov::prev(HashIter< K, V >& iter)
     return;
   }
   const size_t startSlot = (iter.node != nullptr) ? iter.slot : iter.table->cap;
-  for (size_t i = startSlot; i-- > 0; )
+  size_t i = startSlot;
+  while (i > 0)
   {
+    --i;
     if (iter.table->slots[i].tail != nullptr)
     {
       iter.slot = i;
@@ -281,8 +283,10 @@ bool zharov::hasPrev(const HashIter< K, V >& iter)
     return true;
   }
   const size_t startSlot = (iter.node != nullptr) ? iter.slot : iter.table->cap;
-  for (size_t i = startSlot; i-- > 0; )
+  size_t i = startSlot;
+  while (i > 0)
   {
+    --i;
     if (iter.table->slots[i].tail != nullptr)
     {
       return true;
