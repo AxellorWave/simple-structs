@@ -8,66 +8,66 @@ namespace zharov
   namespace detail
   {
     template< class T >
-    struct node
+    struct Node
     {
       T val;
-      node< T >* next;
-      node< T >* prev;
+      Node< T >* next;
+      Node< T >* prev;
     };
   }
 
   template< class T >
-  struct list
+  struct List
   {
-    detail::node< T >* head;
-    detail::node< T >* tail;
+    detail::Node< T >* head;
+    detail::Node< T >* tail;
     size_t size;
   };
 
   template< class T >
-  list< T > makeList();
+  List< T > makeList();
 
   template< class T >
-  void clear(list< T >& lst);
+  void clear(List< T >& lst);
 
   template< class T >
-  void swap(list< T >& a, list< T >& b);
+  void swap(List< T >& a, List< T >& b);
 
   template< class T >
-  list< T > copy(const list< T >& src);
+  List< T > copy(const List< T >& src);
 
   template< class T >
-  detail::node< T >* insert(list< T >& lst, detail::node< T >* pos, const T& val);
+  detail::Node< T >* insert(List< T >& lst, detail::Node< T >* pos, const T& val);
 
   template< class T >
-  void remove(list< T >& lst, detail::node< T >* pos);
+  void remove(List< T >& lst, detail::Node< T >* pos);
 
   template< class T >
-  void pushFront(list< T >& lst, const T& val);
+  void pushFront(List< T >& lst, const T& val);
 
   template< class T >
-  void pushBack(list< T >& lst, const T& val);
+  void pushBack(List< T >& lst, const T& val);
 
   template< class T >
-  void popFront(list< T >& lst);
+  void popFront(List< T >& lst);
 
   template< class T >
-  void popBack(list< T >& lst);
+  void popBack(List< T >& lst);
 }
 
 template< class T >
-zharov::list< T > zharov::makeList()
+zharov::List< T > zharov::makeList()
 {
-  return list< T >{nullptr, nullptr, 0};
+  return List< T >{nullptr, nullptr, 0};
 }
 
 template< class T >
-void zharov::clear(list< T >& lst)
+void zharov::clear(List< T >& lst)
 {
-  detail::node< T >* curr = lst.head;
+  detail::Node< T >* curr = lst.head;
   while (curr != nullptr)
   {
-    detail::node< T >* next = curr->next;
+    detail::Node< T >* next = curr->next;
     delete curr;
     curr = next;
   }
@@ -77,7 +77,7 @@ void zharov::clear(list< T >& lst)
 }
 
 template< class T >
-void zharov::swap(list< T >& a, list< T >& b)
+void zharov::swap(List< T >& a, List< T >& b)
 {
   std::swap(a.head, b.head);
   std::swap(a.tail, b.tail);
@@ -85,12 +85,12 @@ void zharov::swap(list< T >& a, list< T >& b)
 }
 
 template< class T >
-zharov::list< T > zharov::copy(const list< T >& src)
+zharov::List< T > zharov::copy(const List< T >& src)
 {
-  list< T > res = makeList< T >();
+  List< T > res = makeList< T >();
   try
   {
-    for (detail::node< T >* curr = src.head; curr != nullptr; curr = curr->next)
+    for (detail::Node< T >* curr = src.head; curr != nullptr; curr = curr->next)
     {
       pushBack(res, curr->val);
     }
@@ -104,9 +104,9 @@ zharov::list< T > zharov::copy(const list< T >& src)
 }
 
 template< class T >
-zharov::detail::node< T >* zharov::insert(list< T >& lst, detail::node< T >* pos, const T& val)
+zharov::detail::Node< T >* zharov::insert(List< T >& lst, detail::Node< T >* pos, const T& val)
 {
-  detail::node< T >* newNode = new detail::node< T >{val, pos, pos ? pos->prev : lst.tail};
+  detail::Node< T >* newNode = new detail::Node< T >{val, pos, pos ? pos->prev : lst.tail};
   if (newNode->prev)
   {
     newNode->prev->next = newNode;
@@ -128,7 +128,7 @@ zharov::detail::node< T >* zharov::insert(list< T >& lst, detail::node< T >* pos
 }
 
 template< class T >
-void zharov::remove(list< T >& lst, detail::node< T >* pos)
+void zharov::remove(List< T >& lst, detail::Node< T >* pos)
 {
   if (pos->prev)
   {
@@ -151,25 +151,25 @@ void zharov::remove(list< T >& lst, detail::node< T >* pos)
 }
 
 template< class T >
-void zharov::pushFront(list< T >& lst, const T& val)
+void zharov::pushFront(List< T >& lst, const T& val)
 {
   insert(lst, lst.head, val);
 }
 
 template< class T >
-void zharov::pushBack(list< T >& lst, const T& val)
+void zharov::pushBack(List< T >& lst, const T& val)
 {
-  insert(lst, static_cast< detail::node< T >* >(nullptr), val);
+  insert(lst, static_cast< detail::Node< T >* >(nullptr), val);
 }
 
 template< class T >
-void zharov::popFront(list< T >& lst)
+void zharov::popFront(List< T >& lst)
 {
   remove(lst, lst.head);
 }
 
 template< class T >
-void zharov::popBack(list< T >& lst)
+void zharov::popBack(List< T >& lst)
 {
   remove(lst, lst.tail);
 }

@@ -7,7 +7,7 @@
 namespace zharov
 {
   template< class T >
-  struct array
+  struct Array
   {
     T* data;
     size_t size;
@@ -15,36 +15,36 @@ namespace zharov
   };
 
   template< class T >
-  array< T > makeArray(size_t cap);
+  Array< T > makeArray(size_t cap);
 
   template< class T >
-  void clear(array< T >& arr);
+  void clear(Array< T >& arr);
 
   template< class T >
-  void swap(array< T >& a, array< T >& b);
+  void swap(Array< T >& a, Array< T >& b);
 
   template< class T >
-  array< T > copy(const array< T >& src, size_t newCap = 0);
+  Array< T > copy(const Array< T >& src, size_t newCap = 0);
 
   template< class T >
-  void insert(array< T >& arr, size_t pos, const T& val);
+  void insert(Array< T >& arr, size_t pos, const T& val);
 
   template< class T >
-  void remove(array< T >& arr, size_t pos);
+  void remove(Array< T >& arr, size_t pos);
 
   template< class T >
-  void pushBack(array< T >& arr, const T& val);
+  void pushBack(Array< T >& arr, const T& val);
 }
 
 template< class T >
-zharov::array< T > zharov::makeArray(size_t cap)
+zharov::Array< T > zharov::makeArray(size_t cap)
 {
-  array< T > res{new T[cap], 0, cap};
+  Array< T > res{new T[cap], 0, cap};
   return res;
 }
 
 template< class T >
-void zharov::clear(array< T >& arr)
+void zharov::clear(Array< T >& arr)
 {
   delete[] arr.data;
   arr.data = nullptr;
@@ -53,7 +53,7 @@ void zharov::clear(array< T >& arr)
 }
 
 template< class T >
-void zharov::swap(array< T >& a, array< T >& b)
+void zharov::swap(Array< T >& a, Array< T >& b)
 {
   std::swap(a.data, b.data);
   std::swap(a.size, b.size);
@@ -61,13 +61,13 @@ void zharov::swap(array< T >& a, array< T >& b)
 }
 
 template< class T >
-zharov::array< T > zharov::copy(const array< T >& src, size_t newCap)
+zharov::Array< T > zharov::copy(const Array< T >& src, size_t newCap)
 {
   if (newCap < src.size)
   {
     newCap = src.cap;
   }
-  array< T > res = makeArray< T >(newCap);
+  Array< T > res = makeArray< T >(newCap);
   try
   {
     for (size_t i = 0; i < src.size; ++i)
@@ -85,14 +85,14 @@ zharov::array< T > zharov::copy(const array< T >& src, size_t newCap)
 }
 
 template< class T >
-void zharov::insert(array< T >& arr, size_t pos, const T& val)
+void zharov::insert(Array< T >& arr, size_t pos, const T& val)
 {
   if (pos > arr.size)
   {
     throw std::out_of_range("pos out of range");
   }
   const size_t newCap = (arr.size == arr.cap) ? arr.cap * 2 + 1 : arr.cap;
-  array< T > tmp = copy(arr, newCap);
+  Array< T > tmp = copy(arr, newCap);
   try
   {
     for (size_t i = tmp.size; i > pos; --i)
@@ -112,13 +112,13 @@ void zharov::insert(array< T >& arr, size_t pos, const T& val)
 }
 
 template< class T >
-void zharov::remove(array< T >& arr, size_t pos)
+void zharov::remove(Array< T >& arr, size_t pos)
 {
   if (pos >= arr.size)
   {
     throw std::out_of_range("remove: pos out of range");
   }
-  array< T > tmp = copy(arr);
+  Array< T > tmp = copy(arr);
   try
   {
     for (size_t i = pos; i + 1 < tmp.size; ++i)
@@ -137,7 +137,7 @@ void zharov::remove(array< T >& arr, size_t pos)
 }
 
 template< class T >
-void zharov::pushBack(array< T >& arr, const T& val)
+void zharov::pushBack(Array< T >& arr, const T& val)
 {
   insert(arr, arr.size, val);
 }
