@@ -31,6 +31,9 @@ namespace zharov
 
   template< class T >
   void remove(array< T >& arr, size_t pos);
+
+  template< class T >
+  void pushBack(array< T >& arr, const T& val);
 }
 
 template< class T >
@@ -131,6 +134,12 @@ void zharov::remove(array< T >& arr, size_t pos)
   }
   swap(arr, tmp);
   clear(tmp);
+}
+
+template< class T >
+void zharov::pushBack(array< T >& arr, const T& val)
+{
+  insert(arr, arr.size, val);
 }
 
 #endif
